@@ -1,5 +1,5 @@
 #include "SSD1306.h"
-#include "../spi/spi.h"
+#include "spi/spi.h"
 #include <stdint.h>         // fixed size types
 
 /* Command talbe, page 28 of SSD1306 datasheet ********************************/

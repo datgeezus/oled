@@ -1,5 +1,8 @@
-#include "font.h"
+#include "oled/oled.h"
 
+#define CHAR_WIDTH  5
+
+/* Font ***********************************************************************/
 const uint8_t font[95][5] =
 {
     { 0x00, 0x00, 0x00, 0x00, 0x00 }, // ' ' 0x20
@@ -99,3 +102,62 @@ const uint8_t font[95][5] =
     { 0x02, 0x01, 0x02, 0x04, 0x02 }, // ~   0X7E
 };
 
+
+/* static funtions ************************************************************/
+static uint8_t isPrintable(uint8_t c);
+static void writeChar(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line);
+
+
+/* staic functions (helpers) **************************************************/
+uint8_t isPrintable(uint8_t c)
+{
+    return( (0x20 <= c) && (c <= 0x7E));
+}
+
+void writeChar(uint8_t* buffer, uint8_t c, uint8_t x, uint8_t line)
+{
+    uint8_t i, *p;
+
+    // Move pointer to correct buffer address
+    p = &buffer[ x + ((line) * OLED_WIDTH)];
+
+    // Offset character 0x20 times
+    c -= ' ';
+
+    // Move character to buffer
+    for (i = 0; i < CHAR_WIDTH; i++, p++)
+    {
+        *p = font[c][i];
+    }
+}
+
+
+
+/* Print functions **********************************************************/
+void oled_putc(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line)
+{
+    // Check for vertical space
+    if (col > (OLED_WIDTH - CHAR_WIDTH))
+        return;
+
+    //
+    if (isPrintable(c))
+    {
+        writeChar(buffer, c, col, line);
+    }
+    else if ( c == '\n')
+    {
+
+    }
+    else if ( c == '\t')
+    {
+        oled_putc(buffer, ' ', col, line);
+        oled_putc(buffer, ' ', col, line);
+    }
+}
+
+void oled_puts(uint8_t* buffer, uint8_t* s, uint8_t col, uint8_t line)
+{
+    while(s++)
+        oled_putc(buffer, *s, col, line);
+}

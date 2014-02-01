@@ -1,16 +1,12 @@
-#include "oled.h"
-#include "SSD1306.h"
+#include "oled.h"           // main functions
+#include "oled_print.h"     // print functions
+#include "oled_draw.h"      // draw functions
+#include "SSD1306.h"        // hardware driver functions
 #include "sysconfig.h"      // __delay_ms() needs FCY defined
 #include <libpic30.h>       // __delay_ms()
 #include "string.h"         // memset()
-#include "font.h"
 
-/* static funtions ************************************************************/
-static uint8_t isPrintable(uint8_t c);
-static void writeChar(uint8_t x, uint8_t line, uint8_t c);
-
-
-//uint8_t buffer[OLED_BUFFSIZE];
+// Display buffer
 uint8_t buffer[OLED_BUFFSIZE] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -80,6 +76,7 @@ uint8_t buffer[OLED_BUFFSIZE] = {
 #endif
 };
 
+/* Main functions *************************************************************/
 void oled_config(void)
 {
     OLED_CS_TRS = 0;     // CS as output
@@ -92,8 +89,8 @@ void oled_config(void)
 
 void oled_begin(void)
 {
-    oled_config();
-    oled_reset();
+    oled_config();      // hardware config
+    oled_reset();       // display config
 }
 
 void oled_reset(void)
@@ -125,8 +122,8 @@ void oled_reset(void)
 
 void oled_render(void)
 {
-    ssd1306cmd_addrColumnAddress(0, OLED_NCOLUMNS);
-    ssd1306cmd_addrPageAddress(0, OLED_NPAGES);
+    ssd1306cmd_addrColumnAddress(0, OLED_LAST_COL);
+    ssd1306cmd_addrPageAddress(0, OLED_LAST_PAGE);
     ssd1306_send(buffer, OLED_BUFFSIZE);
 }
 
@@ -135,56 +132,27 @@ void oled_clearDisplay(void)
     memset(buffer, 0, OLED_BUFFSIZE);
 }
 
-/* staic functions (helpers) **************************************************/
-static uint8_t isPrintable(uint8_t c)
+/* Print functions ************************************************************/
+void oled_printc(uint8_t c, uint8_t col, uint8_t line)
 {
-    return( (0x20 <= c) && (c <= 0x7E));
-}
-
-static void writeChar(uint8_t x, uint8_t line, uint8_t c)
-{
-    uint8_t i, *p;
-    p = &buffer[x + (line * OLED_WIDTH)];
-    c -= ' ';
-
-    for (i = 0; i < 5; i++, p++)
-    {
-        *p = font[c][i];
-    }
-}
-
-/* Display functions **********************************************************/
-void oled_putc(uint8_t x, uint8_t line, uint8_t c, uint8_t size)
-{
-    if (isPrintable(c))
-    {
-        if( (x <= (OLED_WIDTH-5)) && (line <= OLED_NPAGES + 1))
-        {
-            writeChar(x, line, c);
-        }
-    }
-    else if ( c == '\n')
-    {
-        
-    }
-    else if ( c == '\t')
-    {
-        oled_putc(x,line,' ',size);
-        oled_putc(x,line,' ',size);
-    }
-}
-
-void oled_puts(uint8_t x, uint8_t line, uint8_t* s, uint8_t size)
-{
-    while(*s)
-        oled_putc(0,0,*s++,0);
-}
-
-void oled_drawPixel(uint8_t x, uint8_t y)
-{
-    if( (x > OLED_WIDTH) || ( y > OLED_HEIGHT) )
+    // Check for a valid line [1 to 8]
+    if (line < 0 || line > OLED_NPAGES)
         return;
 
-//    buffer[x + ((y / 8) * OLED_WIDTH)] = (1 << (y % 8));
-    buffer[x + ((y >> 3) * OLED_WIDTH)] = (1 << (y & 7));
+    // to ease further computations, send values with index 0
+    oled_putc(buffer, c, --col, --line);
+}
+
+/* Draw functions *************************************************************/
+void oled_drawPixel(uint8_t x, uint8_t y)
+{
+    // Check for a valid position
+    // x: [1 to 128]
+    // y: [1 to 64]
+    if(x < 1 || x > OLED_WIDTH || y < 1 || y > OLED_HEIGHT)
+        return;
+
+    // put pixel on buffer
+    // to ease further computations, send values with index 0
+    oled_putPixel(buffer, --x, --y);
 }
