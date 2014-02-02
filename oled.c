@@ -6,6 +6,10 @@
 #include <libpic30.h>       // __delay_ms()
 #include "string.h"         // memset()
 
+/* Static functions ***********************************************************/
+static void oled_config(void);
+
+
 // Display buffer
 uint8_t buffer[OLED_BUFFSIZE] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -133,14 +137,23 @@ void oled_clearDisplay(void)
 }
 
 /* Print functions ************************************************************/
-void oled_printc(uint8_t c, uint8_t col, uint8_t line)
+void oled_printc(char c, uint8_t col, uint8_t line)
 {
     // Check for a valid line [1 to 8]
     if (line < 0 || line > OLED_NPAGES)
         return;
 
-    // to ease further computations, send values with index 0
+    // to ease further computations, send values with 0 index
     oled_putc(buffer, c, --col, --line);
+}
+
+void oled_prints(char* s, uint8_t col, uint8_t line)
+{
+    uint8_t sLen = strlen(s);
+    if((sLen + CHAR_WIDTH) + col > OLED_WIDTH)
+        return;
+
+    oled_puts(buffer, s, --col, --line, sLen);
 }
 
 /* Draw functions *************************************************************/
@@ -153,6 +166,6 @@ void oled_drawPixel(uint8_t x, uint8_t y)
         return;
 
     // put pixel on buffer
-    // to ease further computations, send values with index 0
+    // to ease further computations, send values with 0 index
     oled_putPixel(buffer, --x, --y);
 }

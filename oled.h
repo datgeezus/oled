@@ -11,6 +11,16 @@
 #include <stdint.h>
 #include "../pinconfig.h"
 
+/* User must define OLED_CS, OLED_RST and OLED_DC here or in a "pinconfig.h" file
+ * Example:
+ *  #define OLED_CS         LATAbits.LATA0      // Chip select
+ *  #define OLED_CS_TRS     TRISAbits.TRISA0    // Chip select TRIS
+ *  #define OLED_RST        LATBbits.LATB6      // Reset
+ *  #define OLED_RST_TRS    TRISBbits.TRISB6    // Reset TRIS
+ *  #define OLED_DC         LATBbits.LATB7      // Data/command
+ *  #define OLED_DC_TRS     TRISBbits.TRISB7    // Data/command TRIS
+ */
+
 #if !defined(OLED_CS) || !defined (OLED_RST) || !defined(OLED_DC) || \
     !defined(OLED_CS_TRS) || !defined (OLED_RST_TRS) || !defined(OLED_DC_TRS)
 #error("Must define OLED_CS, OLED_RST and OLED_DC ")
@@ -32,16 +42,14 @@
 #define OLED_LAST_PAGE      (OLED_NPAGES - 1)
 #define OLED_LAST_COL       (OLED_WIDTH - 1)
 
-//extern uint8_t buffer[OLED_BUFFSIZE];
 
-void oled_config(void);
 void oled_begin(void);
 void oled_reset(void);
 void oled_render(void);
 void oled_clearDisplay(void);
 
-void oled_printc(uint8_t c, uint8_t col, uint8_t line);
-void oled_prints(uint8_t* s, uint8_t col, uint8_t line);
+void oled_printc(char c, uint8_t col, uint8_t line);
+void oled_prints(char* s, uint8_t col, uint8_t line);
 
 void oled_drawPixel(uint8_t x, uint8_t y);
 

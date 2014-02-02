@@ -1,6 +1,6 @@
+#include "oled_print.h"
 #include "oled/oled.h"
 
-#define CHAR_WIDTH  5
 
 /* Font ***********************************************************************/
 const uint8_t font[95][5] =
@@ -104,17 +104,17 @@ const uint8_t font[95][5] =
 
 
 /* static funtions ************************************************************/
-static uint8_t isPrintable(uint8_t c);
-static void writeChar(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line);
+static uint8_t isPrintable(char c);
+static void writeChar(uint8_t* buffer, char c, uint8_t col, uint8_t line);
 
 
 /* staic functions (helpers) **************************************************/
-uint8_t isPrintable(uint8_t c)
+uint8_t isPrintable(char c)
 {
     return( (0x20 <= c) && (c <= 0x7E));
 }
 
-void writeChar(uint8_t* buffer, uint8_t c, uint8_t x, uint8_t line)
+void writeChar(uint8_t* buffer, char c, uint8_t x, uint8_t line)
 {
     uint8_t i, *p;
 
@@ -134,7 +134,7 @@ void writeChar(uint8_t* buffer, uint8_t c, uint8_t x, uint8_t line)
 
 
 /* Print functions **********************************************************/
-void oled_putc(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line)
+void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line)
 {
     // Check for vertical space
     if (col > (OLED_WIDTH - CHAR_WIDTH))
@@ -156,8 +156,9 @@ void oled_putc(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line)
     }
 }
 
-void oled_puts(uint8_t* buffer, uint8_t* s, uint8_t col, uint8_t line)
+void oled_puts(uint8_t* buffer, char* s, uint8_t col, uint8_t line, uint8_t sLen)
 {
-    while(s++)
+    uint8_t i = 0;
+    for(; i < sLen; i++, buffer +=CHAR_WIDTH, s++)
         oled_putc(buffer, *s, col, line);
 }

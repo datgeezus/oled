@@ -10,8 +10,11 @@
 
 #include <stdint.h>
 
-void oled_putc(uint8_t* buffer, uint8_t c, uint8_t col, uint8_t line);
-void oled_puts(uint8_t* buffer, uint8_t* s, uint8_t col, uint8_t line);
+
+#define CHAR_WIDTH  5
+
+void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line);
+void oled_puts(uint8_t* buffer, char* s, uint8_t col, uint8_t line, uint8_t sLen);
 
 #endif	/* OLED_PRINT_H */
 
