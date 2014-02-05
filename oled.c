@@ -2,9 +2,25 @@
 #include "oled_print.h"     // print functions
 #include "oled_draw.h"      // draw functions
 #include "SSD1306.h"        // hardware driver functions
-#include "../sysconfig.h"   // __delay_ms() needs FCY defined
+#include "../globals.h"   // __delay_ms() needs FCY defined
 #include <libpic30.h>       // __delay_ms()
 #include "string.h"         // memset()
+#include "../pinconfig.h"
+
+/* User must define OLED_CS, OLED_RST and OLED_DC here or in a "pinconfig.h" file
+ * Example:
+ *  #define OLED_CS         LATAbits.LATA0      // Chip select
+ *  #define OLED_CS_TRS     TRISAbits.TRISA0    // Chip select TRIS
+ *  #define OLED_RST        LATBbits.LATB6      // Reset
+ *  #define OLED_RST_TRS    TRISBbits.TRISB6    // Reset TRIS
+ *  #define OLED_DC         LATBbits.LATB7      // Data/command
+ *  #define OLED_DC_TRS     TRISBbits.TRISB7    // Data/command TRIS
+ */
+
+#if !defined(OLED_CS) || !defined (OLED_RST) || !defined(OLED_DC) || \
+    !defined(OLED_CS_TRS) || !defined (OLED_RST_TRS) || !defined(OLED_DC_TRS)
+#error("Must define OLED_CS, OLED_RST and OLED_DC ")
+#endif
 
 /* Private functions ***********************************************************/
 static void oled_config(void);
@@ -88,10 +104,10 @@ void oled_config(void)
     OLED_DC_TRS = 0;     // CD as output
 
     // Configure SPI1
-    ssd1306_config();
+    ssd1306_init();
 }
 
-void oled_begin(void)
+void oled_init(void)
 {
     oled_config();      // hardware config
     oled_reset();       // display config

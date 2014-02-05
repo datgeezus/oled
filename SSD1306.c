@@ -1,6 +1,7 @@
 #include "SSD1306.h"
 #include "spi/spi.h"
 #include <stdint.h>         // fixed size types
+#include "../pinconfig.h"
 
 /* Command talbe, page 28 of SSD1306 datasheet ********************************/
 // Fundamental
@@ -218,8 +219,7 @@ void ssd1306cmd_chargePump(uint8_t arg)
     ssd1306_sendCMD(cmd, 2);
 }
 
-void ssd1306_config()
+void ssd1306_init()
 {
-    spiConfigPins();
-    spiConfig();
+    spi_init();
 }

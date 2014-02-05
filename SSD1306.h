@@ -89,7 +89,7 @@ void ssd1306cmd_nop(void);
 
 void ssd1306cmd_chargePump(uint8_t arg);
 
-void ssd1306_config();
+void ssd1306_init();
 void ssd1306_send(uint8_t* data, uint16_t dataSize);
 
 #endif	/* SSD1306_H */
