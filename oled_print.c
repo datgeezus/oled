@@ -1,5 +1,5 @@
 #include "oled_print.h"
-#include "oled/oled.h"
+#include "oled.h"
 
 
 /* Font ***********************************************************************/
@@ -105,7 +105,7 @@ const uint8_t font[95][5] =
 
 /* static funtions ************************************************************/
 static uint8_t isPrintable(char c);
-static void writeChar(uint8_t* buffer, char c, uint8_t col, uint8_t line);
+static void writeChar(uint8_t* buffer, int8_t c, uint8_t col, uint8_t line);
 
 
 /* staic functions (helpers) **************************************************/
@@ -114,7 +114,7 @@ uint8_t isPrintable(char c)
     return( (0x20 <= c) && (c <= 0x7E));
 }
 
-void writeChar(uint8_t* buffer, char c, uint8_t x, uint8_t line)
+void writeChar(uint8_t* buffer, int8_t c, uint8_t x, uint8_t line)
 {
     uint8_t i, *p;
 
@@ -156,7 +156,7 @@ void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line)
     }
 }
 
-void oled_puts(uint8_t* buffer, char* s, uint8_t col, uint8_t line, uint8_t sLen)
+void oled_puts(uint8_t* buffer, const char* s, uint8_t col, uint8_t line, uint8_t sLen)
 {
     uint8_t i = 0;
     for(; i < sLen; i++, buffer +=CHAR_WIDTH, s++)

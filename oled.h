@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   oled.h
  * Author: jesus
  *
@@ -49,7 +49,7 @@ void oled_render(void);
 void oled_clearDisplay(void);
 
 void oled_printc(char c, uint8_t col, uint8_t line);
-void oled_prints(char* s, uint8_t col, uint8_t line);
+void oled_prints(const char* s, uint8_t col, uint8_t line);
 
 void oled_drawPixel(uint8_t x, uint8_t y);
 

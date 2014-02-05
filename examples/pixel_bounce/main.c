@@ -1,14 +1,6 @@
-/*
- * File:   main.c
- * Author: jesus
- *
- * Created on January 28, 2014, 7:21 PM
- */
-
 #include <stdint.h>
 #include "configbits.h"
 #include "sysconfig.h"
-#include "pinconfig.h"
 #include <libpic30.h>
 #include "oled/oled.h"
 
@@ -17,7 +9,7 @@ void bounce(uint8_t* x, uint8_t* y, uint8_t* dx, uint8_t* dy);
 
 int main(void) {
     sysConfigClock();
-    pinConfig();
+    sysConfigPins();
     oled_begin();
 
     // Initial parameters

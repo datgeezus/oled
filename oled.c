@@ -2,11 +2,11 @@
 #include "oled_print.h"     // print functions
 #include "oled_draw.h"      // draw functions
 #include "SSD1306.h"        // hardware driver functions
-#include "sysconfig.h"      // __delay_ms() needs FCY defined
+#include "../sysconfig.h"   // __delay_ms() needs FCY defined
 #include <libpic30.h>       // __delay_ms()
 #include "string.h"         // memset()
 
-/* Static functions ***********************************************************/
+/* Private functions ***********************************************************/
 static void oled_config(void);
 
 
@@ -147,7 +147,7 @@ void oled_printc(char c, uint8_t col, uint8_t line)
     oled_putc(buffer, c, --col, --line);
 }
 
-void oled_prints(char* s, uint8_t col, uint8_t line)
+void oled_prints(const char* s, uint8_t col, uint8_t line)
 {
     uint8_t sLen = strlen(s);
     if((sLen + CHAR_WIDTH) + col > OLED_WIDTH)
