@@ -6,6 +6,8 @@
 #include <libpic30.h>       // __delay_ms()
 #include "string.h"         // memset()
 #include "../pinconfig.h"
+#include <stdio.h>
+
 
 /* User must define OLED_CS, OLED_RST and OLED_DC here or in a "pinconfig.h" file
  * Example:
@@ -171,6 +173,22 @@ void oled_prints(const char* s, uint8_t col, uint8_t line)
 
     oled_puts(buffer, s, --col, --line, sLen);
 }
+
+void oled_printf(const char *format, ...)
+{
+    char tempBuffer[25];
+    va_list  args;
+    va_start(args, format);
+    vsnprintf(tempBuffer, 25, format, args);    /* TODO: write custom sprintf() */
+//    sprintf(tempBuffer, format, args);
+
+    uint8_t sLen = strlen(tempBuffer);
+    oled_puts(buffer, tempBuffer, 1, 1, sLen);
+    va_end(args);
+}
+
+
+
 
 /* Draw functions *************************************************************/
 void oled_drawPixel(uint8_t x, uint8_t y)
