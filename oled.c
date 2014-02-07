@@ -179,7 +179,7 @@ void oled_printf(const char *format, ...)
     char tempBuffer[25];
     va_list  args;
     va_start(args, format);
-    vsnprintf(tempBuffer, 25, format, args);    /* TODO: write custom sprintf() */
+    vsnprintf(tempBuffer, 25, format, args);    /* TODO: write custom vsprintf() */
 //    sprintf(tempBuffer, format, args);
 
     uint8_t sLen = strlen(tempBuffer);
