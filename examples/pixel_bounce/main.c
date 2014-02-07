@@ -8,9 +8,8 @@ void move(uint8_t* x, uint8_t* y, uint8_t* dx, uint8_t* dy);
 void bounce(uint8_t* x, uint8_t* y, uint8_t* dx, uint8_t* dy);
 
 int main(void) {
-    sysConfigClock();
-    sysConfigPins();
-    oled_begin();
+    sys_init();
+    oled_init();
 
     // Initial parameters
     uint8_t x = OLED_WIDTH / 2;     // x initial position
