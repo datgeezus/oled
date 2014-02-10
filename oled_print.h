@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 
-#define CHAR_WIDTH  5
+#define CHAR_WIDTH  5U
 
 void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line);
 void oled_puts(uint8_t* buffer, const char* s, uint8_t col, uint8_t line, uint8_t sLen);

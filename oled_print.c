@@ -1,8 +1,13 @@
 #include "oled_print.h"
 #include "oled.h"
 
+
+/* Private variables **********************************************************/
+#define COURSOR_MAX_POS     64U     // 128 cols * 8 lines
+static uint16_t coursor = 0;        // holds coursor position
+
 /* Font ***********************************************************************/
-const uint8_t font[95][5] =
+static const uint8_t font[95][5] =
 {
     { 0x00, 0x00, 0x00, 0x00, 0x00 }, // ' ' 0x20
     { 0x00, 0x00, 0x4f, 0x00, 0x00 }, // !   0x21
@@ -102,37 +107,12 @@ const uint8_t font[95][5] =
 };
 
 
-/* static funtions ************************************************************/
-static uint8_t isPrintable(char c);
-static void writeChar(uint8_t* buffer, int8_t c, uint8_t col, uint8_t line);
+/* Private funtions ************************************************************/
+static inline uint8_t isPrintable(const uint8_t c);
+static void writeChar(uint8_t* buffer, uint8_t c, const uint8_t col, const uint8_t line);
 
 
-/* staic functions (helpers) **************************************************/
-uint8_t isPrintable(char c)
-{
-    return( (0x20 <= c) && (c <= 0x7E));
-}
-
-void writeChar(uint8_t* buffer, int8_t c, uint8_t x, uint8_t line)
-{
-    uint8_t i, *p;
-
-    // Move pointer to correct buffer address
-    p = &buffer[ x + ((line) * OLED_WIDTH)];
-
-    // Offset character 0x20 times
-    c -= ' ';
-
-    // Move character to buffer
-    for (i = 0; i < CHAR_WIDTH; i++, p++)
-    {
-        *p = font[c][i];
-    }
-}
-
-
-
-/* Print functions **********************************************************/
+/* Publi print functions **********************************************************/
 void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line)
 {
     // Check for vertical space
@@ -142,6 +122,8 @@ void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line)
     //
     if (isPrintable(c))
     {
+        coursor += CHAR_WIDTH;
+        coursor &= COURSOR_MAX_POS;
         writeChar(buffer, c, col, line);
     }
     else if ( c == '\n')
@@ -158,6 +140,32 @@ void oled_putc(uint8_t* buffer, char c, uint8_t col, uint8_t line)
 void oled_puts(uint8_t* buffer, const char* s, uint8_t col, uint8_t line, uint8_t sLen)
 {
     uint8_t i = 0;
-    for(; i < sLen; i++, buffer +=CHAR_WIDTH, s++)
+    for(; i < sLen; ++i, ++s)
+    {
         oled_putc(buffer, *s, col, line);
+        buffer += CHAR_WIDTH;
+    }
+}
+
+
+/* staic functions (helpers) **************************************************/
+static inline uint8_t isPrintable(const uint8_t c)
+{
+    return( (0x20 <= c) && (c <= 0x7E));
+}
+
+void writeChar(uint8_t* buffer, uint8_t c, const uint8_t x, const uint8_t line)
+{
+    // Point to correct buffer address
+    uint8_t *p = &buffer[x + (line * OLED_WIDTH)];
+
+    // Offset character 0x20 times
+    c -= ' ';
+
+    // Move character to buffer
+    uint8_t i = 0;
+    for (; i < CHAR_WIDTH; ++i, ++p)
+    {
+        *p = font[c][i];
+    }
 }

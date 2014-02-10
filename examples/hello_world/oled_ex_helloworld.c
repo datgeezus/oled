@@ -5,9 +5,9 @@
 #include "oled/oled.h"
 
 
-int main(void) {
-    sysConfigClock();
-    sysConfigPins();
+int main(void)
+{
+    sys_init();
     oled_begin();
 
     oled_clearDisplay();

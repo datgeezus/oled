@@ -7,7 +7,8 @@
 void move(uint8_t* x, uint8_t* y, uint8_t* dx, uint8_t* dy);
 void bounce(uint8_t* x, uint8_t* y, uint8_t* dx, uint8_t* dy);
 
-int main(void) {
+int main(void)
+{
     sys_init();
     oled_init();
 
