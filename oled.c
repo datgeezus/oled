@@ -26,9 +26,7 @@
 
 
 /* Private variables **********************************************************/
-static uint8_t printBuffer[OLED_BUFFSIZE] = {0};
-// Display buffer
-static uint8_t buffer[OLED_BUFFSIZE] = {0};
+static uint8_t displayBuffer[OLED_BUFFSIZE] = {0};
 
 
 /* Private functions **********************************************************/
@@ -82,12 +80,12 @@ void oled_render(void)
 {
     ssd1306cmd_addrColumnAddress(0, OLED_LAST_COL);
     ssd1306cmd_addrPageAddress(0, OLED_LAST_PAGE);
-    ssd1306_send(buffer, OLED_BUFFSIZE);
+    ssd1306_send(displayBuffer, OLED_BUFFSIZE);
 }
 
 void oled_clearDisplay(void)
 {
-    memset(buffer, 0, OLED_BUFFSIZE);
+    memset(displayBuffer, 0, OLED_BUFFSIZE);
 }
 
 /* Print functions ************************************************************/
@@ -98,7 +96,7 @@ void oled_printc(uint8_t col, uint8_t line, char c)
         return;
 
     // to ease further computations, send values with 0 index
-    oled_putc(buffer, c, --col, --line);
+    oled_putc(displayBuffer, c, --col, --line);
 }
 
 void oled_prints(uint8_t col, uint8_t line, const char* s)
@@ -107,21 +105,20 @@ void oled_prints(uint8_t col, uint8_t line, const char* s)
     if((sLen + CHAR_WIDTH) + col > OLED_WIDTH)
         return;
 
-    oled_puts(buffer, s, --col, --line, sLen);
+    oled_puts(displayBuffer, s, --col, --line, sLen);
 }
 
 void oled_printf(uint8_t col, uint8_t line, const char* format, ...)
 {
-    char tempBuffer[OLED_WIDTH / CHAR_WIDTH];
+    char printBuffer[OLED_WIDTH] = {0};
     uint8_t maxCharCount = ((OLED_WIDTH / CHAR_WIDTH) - (CHAR_WIDTH * (col-1))) + 1;
 
     va_list  args;
     va_start(args, format);
-    vsnprintf(tempBuffer, maxCharCount, format, args);    /* TODO: write custom vsprintf() */
-//    sprintf(tempBuffer, format, args);
+    vsnprintf(printBuffer, maxCharCount, format, args);    /* TODO: write custom vsprintf() */
 
-    uint8_t sLen = strlen(tempBuffer);
-    oled_puts(buffer, tempBuffer, --col, --line, sLen);
+    uint8_t sLen = strlen(printBuffer);
+    oled_puts(displayBuffer, printBuffer, --col, --line, sLen);
     va_end(args);
 }
 
@@ -138,5 +135,5 @@ void oled_drawPixel(uint8_t x, uint8_t y)
 
     // put pixel on buffer
     // to ease further computations, send values with 0 index
-    oled_putPixel(buffer, --x, --y);
+    oled_putPixel(displayBuffer, --x, --y);
 }
