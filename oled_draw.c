@@ -1,5 +1,5 @@
-#include "oled_draw.h"
-#include "oled.h"
+#include "oled/oled_draw.h"
+#include "oled/oled.h"
 
 void oled_putPixel(uint8_t* buffer, uint8_t x, uint8_t y)
 {

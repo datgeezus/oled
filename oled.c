@@ -1,12 +1,12 @@
-#include "oled.h"           // main functions
-#include "oled_print.h"     // print functions
-#include "oled_draw.h"      // draw functions
-#include "SSD1306.h"        // hardware driver functions
-#include "../globals.h"   // __delay_ms() needs FCY defined
+#include "oled/oled.h"           // main functions
+#include "oled/oled_print.h"     // print functions
+#include "oled/oled_draw.h"      // draw functions
+#include "oled/SSD1306.h"        // hardware driver functions
+#include "device/pinconfig.h"
+#include "common/globals.h" // __delay_ms() needs FCY defined
 #include <libpic30.h>       // __delay_ms()
-#include "string.h"         // memset()
-#include "../pinconfig.h"
-#include <stdio.h>
+#include <string.h>         // memset()
+#include <stdio.h>          // vsnprintf()
 
 
 /* User must define OLED_CS, OLED_RST and OLED_DC here or in a "pinconfig.h" file

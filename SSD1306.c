@@ -1,7 +1,6 @@
-#include "SSD1306.h"
-#include "spi/spi.h"
-#include <stdint.h>         // fixed size types
-#include "../pinconfig.h"
+#include "oled/SSD1306.h"
+#include "peripheral/spi.h"
+#include "device/pinconfig.h"
 
 /* Command talbe, page 28 of SSD1306 datasheet ********************************/
 // Fundamental
